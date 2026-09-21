@@ -582,6 +582,63 @@
     [data-theme="light"] .theme-toggle .icon-sun { display: block; }
     [data-theme="light"] .theme-toggle .icon-moon { display: none; }
 
+    /* Theme picker modal (shown on every startup) */
+    .theme-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(4, 8, 22, 0.72);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .theme-modal.open { display: flex; }
+    .theme-modal .dialog {
+      width: 100%;
+      max-width: 420px;
+      background: linear-gradient(160deg, #131f4d, #0c1330);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 20px;
+      padding: 30px 26px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(4, 10, 30, 0.6);
+      animation: rise 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .theme-modal h2 { margin: 0 0 6px; font-size: 1.3rem; font-weight: 800; color: #eef2fb; }
+    .theme-modal p { margin: 0 0 22px; font-size: 0.9rem; color: #aeb8d4; line-height: 1.55; }
+    .theme-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .theme-choice {
+      cursor: pointer;
+      border-radius: 15px;
+      padding: 20px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #eef2fb;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+    .theme-choice:hover { transform: translateY(-3px); border-color: rgba(56, 225, 196, 0.7); }
+    .theme-choice:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    .theme-choice .swatch {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: grid; place-items: center;
+    }
+    .theme-choice.dark .swatch { background: linear-gradient(160deg, #0c1330, #131f4d); border: 1px solid rgba(255,255,255,0.15); color: #9fd0ff; }
+    .theme-choice.light .swatch { background: linear-gradient(160deg, #eef2fb, #dbe4f5); border: 1px solid rgba(13,27,62,0.15); color: #1668d6; }
+    .theme-choice svg { width: 26px; height: 26px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .theme-modal .dialog { animation: none; }
+      .theme-choice { transition: none; }
+    }
+
     /* Scroll reveal */
     .reveal {
       opacity: 0;
@@ -637,6 +694,29 @@
 </head>
 <body>
   <a class="skip-link" href="#downloads">Skip to downloads</a>
+
+  <!-- Theme picker (shown on every startup) -->
+  <div id="theme-modal" class="theme-modal" role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
+    <div class="dialog">
+      <h2 id="theme-modal-title">Choose your look</h2>
+      <p>How would you like to view the site?</p>
+      <div class="theme-choices">
+        <button class="theme-choice dark" type="button" data-choice="dark">
+          <span class="swatch">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+          </span>
+          Dark
+        </button>
+        <button class="theme-choice light" type="button" data-choice="light">
+          <span class="swatch">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg>
+          </span>
+          Light
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="blob one"></div>
   <div class="blob two"></div>
   <div class="blob three"></div>
@@ -895,30 +975,44 @@
       }
     })();
 
-    // Theme toggle (remembers choice; defaults to dark, or the OS preference).
+    // Theme: ask on every startup via a modal; toggle button still switches live.
     (function () {
-      var KEY = "cr-theme";
       var root = document.documentElement;
       var btn = document.getElementById("theme-toggle");
-      var saved = null;
-      try { saved = localStorage.getItem(KEY); } catch (e) {}
+      var modal = document.getElementById("theme-modal");
 
       function apply(theme) {
         if (theme === "light") root.setAttribute("data-theme", "light");
         else root.removeAttribute("data-theme");
       }
 
-      if (saved === "light" || saved === "dark") {
-        apply(saved);
-      } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
-        apply("light");
+      function closeModal() {
+        if (modal) modal.classList.remove("open");
       }
 
+      // Show the picker every time the page loads (no remembering).
+      if (modal) {
+        modal.classList.add("open");
+        modal.querySelectorAll(".theme-choice").forEach(function (choice) {
+          choice.addEventListener("click", function () {
+            apply(choice.getAttribute("data-choice"));
+            closeModal();
+          });
+        });
+        // Esc dismisses and keeps the default (dark).
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+        });
+        // Focus the first option for keyboard users.
+        var first = modal.querySelector(".theme-choice");
+        if (first) setTimeout(function () { first.focus(); }, 50);
+      }
+
+      // The floating toggle still flips the theme live (session only).
       if (btn) {
         btn.addEventListener("click", function () {
           var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
           apply(next);
-          try { localStorage.setItem(KEY, next); } catch (e) {}
         });
       }
     })();
