@@ -404,10 +404,19 @@
     </footer>
   </div>
 
-  <!-- Background music -->
+  <!-- Background music (on by default) -->
   <audio id="bg-music" loop preload="auto" autoplay>
     <source src="Saravana-Bhavana.m4a" type="audio/mp4" />
   </audio>
+
+  <button id="music-toggle" class="music-toggle" type="button" aria-label="Turn music off" title="Turn music off">
+    <svg class="icon-playing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+    </svg>
+    <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><line x1="2" y1="2" x2="22" y2="22"/>
+    </svg>
+  </button>
 
   <script>
     // Highlight the download card matching the visitor's OS.
@@ -429,36 +438,64 @@
     (function () {
       var audio = document.getElementById("bg-music");
       var btn = document.getElementById("music-toggle");
-      var started = false;
+      // Music is the default. userOff flips to true only when the visitor
+      // explicitly turns it off, so we never fight their choice.
+      var userOff = false;
 
-      function play() {
-        audio.play().then(function () {
-          btn.classList.remove("is-muted");
-          started = true;
-        }).catch(function () {
-          // Autoplay blocked; stay muted until user clicks.
-        });
-      }
-
-      function toggle() {
+      function reflect() {
         if (audio.paused) {
-          play();
-        } else {
-          audio.pause();
           btn.classList.add("is-muted");
+          btn.setAttribute("aria-label", "Turn music on");
+          btn.title = "Turn music on";
+        } else {
+          btn.classList.remove("is-muted");
+          btn.setAttribute("aria-label", "Turn music off");
+          btn.title = "Turn music off";
         }
       }
 
-      btn.addEventListener("click", toggle);
-
-      // Try to start on the first interaction anywhere on the page.
-      function firstInteraction() {
-        if (!started) play();
-        document.removeEventListener("pointerdown", firstInteraction);
-        document.removeEventListener("keydown", firstInteraction);
+      function play() {
+        if (userOff) return;
+        var p = audio.play();
+        if (p && p.then) {
+          p.then(reflect).catch(function () {
+            // Autoplay blocked by the browser; wait for interaction.
+          });
+        } else {
+          reflect();
+        }
       }
-      document.addEventListener("pointerdown", firstInteraction);
-      document.addEventListener("keydown", firstInteraction);
+
+      // 1) Try to play right away.
+      play();
+
+      // 2) Fallback: start on the very first interaction of any kind.
+      function firstInteraction() {
+        if (!userOff && audio.paused) play();
+        removeInteractionListeners();
+      }
+      function removeInteractionListeners() {
+        ["pointerdown", "keydown", "scroll", "touchstart"].forEach(function (evt) {
+          document.removeEventListener(evt, firstInteraction);
+        });
+      }
+      ["pointerdown", "keydown", "scroll", "touchstart"].forEach(function (evt) {
+        document.addEventListener(evt, firstInteraction, { passive: true });
+      });
+
+      // 3) Off switch.
+      btn.addEventListener("click", function () {
+        if (audio.paused) {
+          userOff = false;
+          play();
+        } else {
+          userOff = true;
+          audio.pause();
+        }
+        reflect();
+      });
+
+      reflect();
     })();
   </script>
 </body>
