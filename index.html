@@ -634,6 +634,18 @@
     .theme-choice.light .swatch { background: linear-gradient(160deg, #eef2fb, #dbe4f5); border: 1px solid rgba(13,27,62,0.15); color: #1668d6; }
     .theme-choice svg { width: 26px; height: 26px; }
 
+    .theme-remember {
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.85rem;
+      color: #aeb8d4;
+      cursor: pointer;
+      user-select: none;
+    }
+    .theme-remember input { width: 16px; height: 16px; accent-color: var(--cyan); cursor: pointer; }
+
     @media (prefers-reduced-motion: reduce) {
       .theme-modal .dialog { animation: none; }
       .theme-choice { transition: none; }
@@ -714,6 +726,10 @@
           Light
         </button>
       </div>
+      <label class="theme-remember">
+        <input type="checkbox" id="theme-remember" />
+        Remember my choice
+      </label>
     </div>
   </div>
 
@@ -975,11 +991,13 @@
       }
     })();
 
-    // Theme: ask on every startup via a modal; toggle button still switches live.
+    // Theme: ask on startup unless the visitor chose to remember a preference.
     (function () {
+      var KEY = "cr-theme";
       var root = document.documentElement;
       var btn = document.getElementById("theme-toggle");
       var modal = document.getElementById("theme-modal");
+      var remember = document.getElementById("theme-remember");
 
       function apply(theme) {
         if (theme === "light") root.setAttribute("data-theme", "light");
@@ -990,29 +1008,47 @@
         if (modal) modal.classList.remove("open");
       }
 
-      // Show the picker every time the page loads (no remembering).
-      if (modal) {
+      var saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (e) {}
+
+      if (saved === "light" || saved === "dark") {
+        // A remembered choice exists: apply it and skip the popup.
+        apply(saved);
+        if (remember) remember.checked = true;
+      } else if (modal) {
+        // No saved choice: prompt on every load.
         modal.classList.add("open");
-        modal.querySelectorAll(".theme-choice").forEach(function (choice) {
-          choice.addEventListener("click", function () {
-            apply(choice.getAttribute("data-choice"));
-            closeModal();
-          });
-        });
-        // Esc dismisses and keeps the default (dark).
+        var first = modal.querySelector(".theme-choice");
+        if (first) setTimeout(function () { first.focus(); }, 50);
         document.addEventListener("keydown", function (e) {
           if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
         });
-        // Focus the first option for keyboard users.
-        var first = modal.querySelector(".theme-choice");
-        if (first) setTimeout(function () { first.focus(); }, 50);
       }
 
-      // The floating toggle still flips the theme live (session only).
+      if (modal) {
+        modal.querySelectorAll(".theme-choice").forEach(function (choice) {
+          choice.addEventListener("click", function () {
+            var theme = choice.getAttribute("data-choice");
+            apply(theme);
+            if (remember && remember.checked) {
+              try { localStorage.setItem(KEY, theme); } catch (e) {}
+            }
+            closeModal();
+          });
+        });
+      }
+
+      // The floating toggle flips the theme live, and updates a saved
+      // preference if one is being remembered.
       if (btn) {
         btn.addEventListener("click", function () {
           var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
           apply(next);
+          var has = false;
+          try { has = localStorage.getItem(KEY) !== null; } catch (e) {}
+          if (has) {
+            try { localStorage.setItem(KEY, next); } catch (e) {}
+          }
         });
       }
     })();
