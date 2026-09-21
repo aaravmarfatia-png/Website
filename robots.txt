@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aaravmarfatia-png.github.io/Website/sitemap.xml
+Sitemap: https://aaravmarfatia.com/sitemap.xml
