@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CircuitRunners Outreach — Downloads</title>
   <meta name="description" content="Download CircuitRunners Outreach for Windows and macOS. Create personalized Gmail drafts for school outreach." />
+  <meta name="theme-color" content="#0c1330" />
+  <link rel="canonical" href="https://aaravmarfatia-png.github.io/Website/" />
+
+  <!-- Light hardening for a static page -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <!-- Favicon: inline SVG lightning/circuit mark -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c1330'/%3E%3Cpath d='M17.5 5 8 18h6l-1.5 9L23 13h-6z' fill='%2338e1c4'/%3E%3C/svg%3E" />
@@ -15,9 +21,14 @@
   <meta property="og:description" content="Create personalized Gmail drafts for school outreach in seconds. Free desktop app for Windows and macOS." />
   <meta property="og:url" content="https://aaravmarfatia-png.github.io/Website/" />
   <meta property="og:site_name" content="CircuitRunners Outreach" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:image" content="https://aaravmarfatia-png.github.io/Website/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CircuitRunners Outreach — personalized Gmail drafts for school outreach" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="CircuitRunners Outreach" />
   <meta name="twitter:description" content="Create personalized Gmail drafts for school outreach in seconds. Free desktop app for Windows and macOS." />
+  <meta name="twitter:image" content="https://aaravmarfatia-png.github.io/Website/og-image.png" />
 
   <style>
     :root {
@@ -30,8 +41,26 @@
       --card: rgba(255, 255, 255, 0.06);
       --card-border: rgba(255, 255, 255, 0.12);
       --text: #eef2fb;
-      --muted: #9aa6c4;
+      --muted: #aeb8d4;              /* brightened for AA contrast on dark bg */
       --shadow: rgba(4, 10, 30, 0.55);
+      --glow-1: rgba(43, 143, 255, 0.35);
+      --glow-2: rgba(56, 225, 196, 0.22);
+      --surface: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Light theme */
+    [data-theme="light"] {
+      --navy: #0b1533;
+      --bg-1: #eef2fb;
+      --bg-2: #dbe4f5;
+      --card: rgba(255, 255, 255, 0.75);
+      --card-border: rgba(13, 27, 62, 0.14);
+      --text: #14203a;
+      --muted: #566178;
+      --shadow: rgba(20, 40, 90, 0.18);
+      --glow-1: rgba(43, 143, 255, 0.22);
+      --glow-2: rgba(56, 225, 196, 0.18);
+      --surface: rgba(13, 27, 62, 0.04);
     }
 
     * { box-sizing: border-box; }
@@ -51,9 +80,10 @@
       position: relative;
       overflow-x: hidden;
       background:
-        radial-gradient(1200px 600px at 15% -10%, rgba(43, 143, 255, 0.35), transparent 55%),
-        radial-gradient(1000px 700px at 110% 10%, rgba(56, 225, 196, 0.22), transparent 50%),
+        radial-gradient(1200px 600px at 15% -10%, var(--glow-1), transparent 55%),
+        radial-gradient(1000px 700px at 110% 10%, var(--glow-2), transparent 50%),
         linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     /* Soft animated blobs in the background */
@@ -293,6 +323,137 @@
       letter-spacing: 0.02em;
     }
 
+    /* Generic content section */
+    .section {
+      width: 100%;
+      margin-top: 56px;
+    }
+    .section h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 0 0 6px;
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+    .section .section-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0 auto 24px;
+      max-width: 460px;
+      line-height: 1.6;
+    }
+
+    /* Screenshot slot */
+    .shot {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+      display: block;
+    }
+    .shot img { display: block; width: 100%; height: auto; }
+    .shot-placeholder {
+      aspect-ratio: 16 / 9;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      gap: 10px;
+      padding: 24px;
+    }
+    .shot-placeholder svg { width: 44px; height: 44px; opacity: 0.6; }
+    .shot-placeholder .ph-title { font-weight: 600; color: var(--text); }
+    .shot-placeholder .ph-sub { font-size: 0.8rem; }
+
+    /* Feature grid */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .feature {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .feature .f-icon {
+      width: 38px; height: 38px;
+      border-radius: 11px;
+      display: grid; place-items: center;
+      margin-bottom: 12px;
+      background: rgba(43, 143, 255, 0.14);
+      color: var(--cyan);
+    }
+    .feature .f-icon svg { width: 20px; height: 20px; }
+    .feature h3 { margin: 0 0 6px; font-size: 1rem; font-weight: 700; }
+    .feature p { margin: 0; font-size: 0.85rem; color: var(--muted); line-height: 1.55; }
+
+    /* Install / FAQ accordions */
+    details {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 4px 18px;
+      margin-bottom: 12px;
+    }
+    details + details { margin-top: 0; }
+    summary {
+      cursor: pointer;
+      padding: 14px 0;
+      font-weight: 600;
+      font-size: 0.98rem;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "";
+      width: 9px; height: 9px;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg);
+      transition: transform 0.2s ease;
+      flex: none;
+    }
+    details[open] summary::after { transform: rotate(-135deg); }
+    .details-body {
+      padding: 0 0 16px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+    .details-body ol, .details-body ul { margin: 0; padding-left: 20px; }
+    .details-body li { margin-bottom: 6px; }
+    .details-body code {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.85em;
+    }
+    .details-body strong { color: var(--text); }
+
+    /* Requirements / privacy compact cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .info-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .info-card h3 { margin: 0 0 10px; font-size: 1rem; font-weight: 700; }
+    .info-card ul { margin: 0; padding-left: 18px; }
+    .info-card li { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 5px; }
+
     /* Checksum under each card */
     .checksum {
       margin-top: 2px;
@@ -372,9 +533,97 @@
     .music-toggle.is-muted .icon-playing { display: none; }
     .music-toggle.is-muted .icon-muted { display: block; }
 
+    /* Skip-to-content link (keyboard users) */
+    .skip-link {
+      position: fixed;
+      top: -60px;
+      left: 16px;
+      z-index: 50;
+      background: var(--blue);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: top 0.2s ease;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* Theme toggle (sits above the music toggle) */
+    .theme-toggle {
+      position: fixed;
+      bottom: 84px;
+      right: 22px;
+      z-index: 10;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1px solid var(--card-border);
+      background: var(--surface);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: var(--text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 24px var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+    .theme-toggle:hover {
+      transform: scale(1.08);
+      border-color: rgba(56, 225, 196, 0.6);
+    }
+    .theme-toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    .theme-toggle svg { width: 22px; height: 22px; }
+    .theme-toggle .icon-sun { display: none; }
+    [data-theme="light"] .theme-toggle .icon-sun { display: block; }
+    [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* Download confirmation toast */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 40;
+      background: var(--navy);
+      color: #fff;
+      border: 1px solid rgba(56, 225, 196, 0.4);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: 0 12px 30px var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 90vw;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast svg { width: 18px; height: 18px; color: var(--cyan); flex: none; }
+
     @media (prefers-reduced-motion: reduce) {
       .blob, .badge .dot, .wrap { animation: none; }
-      .card, .action, .music-toggle, .copy-link { transition: none; }
+      .card, .action, .music-toggle, .copy-link, .theme-toggle { transition: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* Higher contrast for users who ask for it */
+    @media (prefers-contrast: more) {
+      :root { --muted: #cdd5e8; --card-border: rgba(255, 255, 255, 0.28); }
+      [data-theme="light"] { --muted: #3a4356; --card-border: rgba(13, 27, 62, 0.35); }
     }
 
     /* On small screens, drop the copy-link text to keep buttons tidy */
@@ -385,6 +634,7 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#downloads">Skip to downloads</a>
   <div class="blob one"></div>
   <div class="blob two"></div>
   <div class="blob three"></div>
@@ -398,7 +648,7 @@
       </p>
     </header>
 
-    <main class="cards">
+    <main class="cards" id="downloads">
       <!-- Windows -->
       <a class="card" id="card-windows" href="CircuitRunners-Outreach-Windows-MSI-BuildKit.zip" download
          aria-label="Download for Windows, 2.9 MB zip build kit">
@@ -462,6 +712,133 @@
       </div>
     </section>
 
+    <!-- Screenshot -->
+    <section class="section reveal" aria-label="App preview">
+      <h2>See it in action</h2>
+      <p class="section-sub">A quick look at the app before you download.</p>
+      <div class="shot">
+        <!-- Drop a real screenshot here: replace this placeholder with
+             <img src="screenshot.png" alt="CircuitRunners Outreach app window" /> -->
+        <div class="shot-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          <span class="ph-title">Screenshot coming soon</span>
+          <span class="ph-sub">Add <code>screenshot.png</code> to the repo and swap in an &lt;img&gt; here.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section reveal" aria-label="Features">
+      <h2>What it does</h2>
+      <p class="section-sub">Built to make school outreach fast and personal.</p>
+      <div class="features">
+        <div class="feature">
+          <span class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/></svg></span>
+          <h3>Personalized drafts</h3>
+          <p>Generates tailored Gmail drafts for each school so every message feels individual.</p>
+        </div>
+        <div class="feature">
+          <span class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg></span>
+          <h3>Fast batch workflow</h3>
+          <p>Create many drafts in one pass instead of writing each email by hand.</p>
+        </div>
+        <div class="feature">
+          <span class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <h3>You stay in control</h3>
+          <p>Everything lands in your Drafts folder. You review and hit send — the app never does.</p>
+        </div>
+        <div class="feature">
+          <span class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <h3>Runs locally</h3>
+          <p>Works on your own machine. Your data stays with you.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Install instructions -->
+    <section class="section reveal" aria-label="Install instructions">
+      <h2>How to install</h2>
+      <p class="section-sub">First launch is unsigned, so your OS will ask you to confirm. Here's how.</p>
+      <details>
+        <summary>Windows</summary>
+        <div class="details-body">
+          <ol>
+            <li>Download the <strong>.zip</strong> build kit and unzip it.</li>
+            <li>Run the installer inside. If Windows SmartScreen appears, click <strong>More info → Run anyway</strong>.</li>
+            <li>Follow the prompts to finish installing, then launch the app.</li>
+          </ol>
+        </div>
+      </details>
+      <details>
+        <summary>macOS</summary>
+        <div class="details-body">
+          <ol>
+            <li>Open the <strong>.dmg</strong> and drag the app into your <strong>Applications</strong> folder.</li>
+            <li>The first time, <strong>right-click the app → Open</strong>, then confirm in the dialog. (A plain double-click may be blocked because the app is unsigned.)</li>
+            <li>If macOS still blocks it, go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>.</li>
+          </ol>
+        </div>
+      </details>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section reveal" aria-label="Frequently asked questions">
+      <h2>FAQ</h2>
+      <details>
+        <summary>Is it safe to install?</summary>
+        <div class="details-body">Yes. The app runs locally and only creates drafts in your own Gmail. You can verify each download against the <strong>SHA-256</strong> checksum shown on the download card.</div>
+      </details>
+      <details>
+        <summary>Why does my computer say it's unsigned?</summary>
+        <div class="details-body">Code-signing certificates cost money and require developer program enrollment. This app isn't signed yet, so Windows and macOS show a one-time warning. Follow the install steps above to approve it.</div>
+      </details>
+      <details>
+        <summary>Does it send email automatically?</summary>
+        <div class="details-body"><strong>No.</strong> It only writes drafts to your Gmail Drafts folder. Nothing is sent unless you review and send it yourself.</div>
+      </details>
+      <details>
+        <summary>What does it access?</summary>
+        <div class="details-body">It needs permission to create Gmail drafts on your account. It does not read your inbox contents beyond what's needed to build drafts, and your data stays on your machine.</div>
+      </details>
+    </section>
+
+    <!-- Requirements + Privacy -->
+    <section class="section reveal" aria-label="Requirements and privacy">
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>Requirements</h3>
+          <ul>
+            <li>Windows 10/11, or macOS 11+ (Apple silicon &amp; Intel)</li>
+            <li>A Google account with Gmail</li>
+            <li>An internet connection to create drafts</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>Privacy</h3>
+          <ul>
+            <li>Runs locally on your device</li>
+            <li>Only creates Gmail <strong>drafts</strong> — never sends</li>
+            <li>No analytics or tracking on this page</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Changelog -->
+    <section class="section reveal" aria-label="Release notes">
+      <h2>What's new</h2>
+      <details open>
+        <summary>v1.0 · September 2026</summary>
+        <div class="details-body">
+          <ul>
+            <li>First public release for Windows and macOS</li>
+            <li>Generate personalized Gmail drafts for school outreach</li>
+            <li>Batch workflow for creating many drafts at once</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
     <footer>
       This app only creates Gmail <strong>drafts</strong> — it never sends email on its own.
       <div class="footnote">First launch is unsigned, so approve it in your OS security prompt.</div>
@@ -473,6 +850,16 @@
   <audio id="bg-music" loop preload="metadata" autoplay>
     <source src="Saravana-Bhavana.m4a" type="audio/mp4" />
   </audio>
+
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg>
+  </button>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+    <span id="toast-msg">Your download should start automatically.</span>
+  </div>
 
   <button id="copy-link" class="copy-link" type="button" aria-label="Copy link to this page" title="Copy link to this page">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
@@ -503,6 +890,67 @@
         var el = document.getElementById(id);
         if (el) el.classList.add("is-recommended");
       }
+    })();
+
+    // Theme toggle (remembers choice; defaults to dark, or the OS preference).
+    (function () {
+      var KEY = "cr-theme";
+      var root = document.documentElement;
+      var btn = document.getElementById("theme-toggle");
+      var saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (e) {}
+
+      function apply(theme) {
+        if (theme === "light") root.setAttribute("data-theme", "light");
+        else root.removeAttribute("data-theme");
+      }
+
+      if (saved === "light" || saved === "dark") {
+        apply(saved);
+      } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+        apply("light");
+      }
+
+      if (btn) {
+        btn.addEventListener("click", function () {
+          var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+          apply(next);
+          try { localStorage.setItem(KEY, next); } catch (e) {}
+        });
+      }
+    })();
+
+    // Scroll reveal for content sections.
+    (function () {
+      var items = document.querySelectorAll(".reveal");
+      if (!items.length) return;
+      if (!("IntersectionObserver" in window)) {
+        items.forEach(function (el) { el.classList.add("is-visible"); });
+        return;
+      }
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      items.forEach(function (el) { obs.observe(el); });
+    })();
+
+    // Download confirmation toast.
+    (function () {
+      var toast = document.getElementById("toast");
+      if (!toast) return;
+      var timer;
+      document.querySelectorAll("a.card[download]").forEach(function (link) {
+        link.addEventListener("click", function () {
+          toast.classList.add("show");
+          clearTimeout(timer);
+          timer = setTimeout(function () { toast.classList.remove("show"); }, 4000);
+        });
+      });
     })();
 
     // Copy-link button.
