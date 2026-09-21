@@ -285,6 +285,59 @@
     .step .step-title { font-weight: 700; font-size: 0.98rem; margin-bottom: 6px; }
     .step .step-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
 
+    /* Version label */
+    .version {
+      margin-top: 18px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* Checksum under each card */
+    .checksum {
+      margin-top: 2px;
+      font-size: 0.66rem;
+      color: var(--muted);
+      opacity: 0.75;
+      word-break: break-all;
+      max-width: 240px;
+      line-height: 1.45;
+      position: relative;
+      z-index: 1;
+    }
+    .checksum b { color: var(--text); font-weight: 600; opacity: 0.9; }
+
+    /* Copy-link button (sits left of the music toggle) */
+    .copy-link {
+      position: fixed;
+      bottom: 22px;
+      right: 84px;
+      z-index: 10;
+      height: 52px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+    .copy-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 225, 196, 0.6);
+      background: rgba(56, 225, 196, 0.12);
+    }
+    .copy-link:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    .copy-link svg { width: 16px; height: 16px; }
+
     /* Music toggle button */
     .music-toggle {
       position: fixed;
@@ -321,7 +374,13 @@
 
     @media (prefers-reduced-motion: reduce) {
       .blob, .badge .dot, .wrap { animation: none; }
-      .card, .action, .music-toggle { transition: none; }
+      .card, .action, .music-toggle, .copy-link { transition: none; }
+    }
+
+    /* On small screens, drop the copy-link text to keep buttons tidy */
+    @media (max-width: 520px) {
+      .copy-link .label { display: none; }
+      .copy-link { padding: 0 16px; }
     }
   </style>
 </head>
@@ -341,7 +400,8 @@
 
     <main class="cards">
       <!-- Windows -->
-      <a class="card" id="card-windows" href="CircuitRunners-Outreach-Windows-MSI-BuildKit.zip" download>
+      <a class="card" id="card-windows" href="CircuitRunners-Outreach-Windows-MSI-BuildKit.zip" download
+         aria-label="Download for Windows, 2.9 MB zip build kit">
         <span class="recommended">Recommended</span>
         <span class="icon-ring">
           <svg class="icon" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -358,10 +418,12 @@
           Download · 2.9 MB
         </span>
         <span class="hint">Windows 10 &amp; 11</span>
+        <span class="checksum"><b>SHA-256</b> fdb3561444304b46f8e6a0dba62aa98368e8f9eeaa5060537f1cf1cfe4a6ef6f</span>
       </a>
 
       <!-- Apple / macOS -->
-      <a class="card" id="card-macos" href="CircuitRunners-Outreach-macOS.dmg" download>
+      <a class="card" id="card-macos" href="CircuitRunners-Outreach-macOS.dmg" download
+         aria-label="Download for macOS, 53 MB disk image">
         <span class="recommended">Recommended</span>
         <span class="icon-ring">
           <svg class="icon" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -376,8 +438,11 @@
           Download · 53 MB
         </span>
         <span class="hint">Apple silicon &amp; Intel</span>
+        <span class="checksum"><b>SHA-256</b> c90647bee0fb495b947aa856350aa737be81654e99b516d200c8e0f65587f426</span>
       </a>
     </main>
+
+    <p class="version">v1.0 · updated September 2026</p>
 
     <section class="steps" aria-label="How it works">
       <div class="step">
@@ -405,9 +470,14 @@
   </div>
 
   <!-- Background music (on by default) -->
-  <audio id="bg-music" loop preload="auto" autoplay>
+  <audio id="bg-music" loop preload="metadata" autoplay>
     <source src="Saravana-Bhavana.m4a" type="audio/mp4" />
   </audio>
+
+  <button id="copy-link" class="copy-link" type="button" aria-label="Copy link to this page" title="Copy link to this page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    <span class="label">Copy link</span>
+  </button>
 
   <button id="music-toggle" class="music-toggle" type="button" aria-label="Turn music off" title="Turn music off">
     <svg class="icon-playing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -435,12 +505,48 @@
       }
     })();
 
+    // Copy-link button.
+    (function () {
+      var btn = document.getElementById("copy-link");
+      if (!btn) return;
+      var label = btn.querySelector(".label");
+      var original = label ? label.textContent : "";
+
+      btn.addEventListener("click", function () {
+        var url = window.location.href;
+        function done() {
+          if (label) {
+            label.textContent = "Copied!";
+            setTimeout(function () { label.textContent = original; }, 1600);
+          }
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(done).catch(fallback);
+        } else {
+          fallback();
+        }
+        function fallback() {
+          var t = document.createElement("textarea");
+          t.value = url;
+          t.style.position = "fixed";
+          t.style.opacity = "0";
+          document.body.appendChild(t);
+          t.select();
+          try { document.execCommand("copy"); done(); } catch (e) {}
+          document.body.removeChild(t);
+        }
+      });
+    })();
+
     (function () {
       var audio = document.getElementById("bg-music");
       var btn = document.getElementById("music-toggle");
-      // Music is the default. userOff flips to true only when the visitor
-      // explicitly turns it off, so we never fight their choice.
+      var STORAGE_KEY = "cr-music-off";
+
+      // Music is the default. userOff is remembered across visits so a
+      // visitor who turned it off stays off; otherwise music plays.
       var userOff = false;
+      try { userOff = localStorage.getItem(STORAGE_KEY) === "1"; } catch (e) {}
 
       function reflect() {
         if (audio.paused) {
@@ -466,8 +572,14 @@
         }
       }
 
-      // 1) Try to play right away.
-      play();
+      // 1) If the visitor previously turned music off, respect that and stop.
+      if (userOff) {
+        audio.pause();
+        reflect();
+      } else {
+        // Try to play right away.
+        play();
+      }
 
       // 2) Fallback: start on the very first interaction of any kind.
       function firstInteraction() {
@@ -483,13 +595,15 @@
         document.addEventListener(evt, firstInteraction, { passive: true });
       });
 
-      // 3) Off switch.
+      // 3) Off switch — remembers the choice across visits.
       btn.addEventListener("click", function () {
         if (audio.paused) {
           userOff = false;
+          try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
           play();
         } else {
           userOff = true;
+          try { localStorage.setItem(STORAGE_KEY, "1"); } catch (e) {}
           audio.pause();
         }
         reflect();
